@@ -9,4 +9,4 @@ export const supabase = isSupabaseConfigured
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-export const HOST_PIN = import.meta.env.VITE_HOST_PIN || "2026";
+export const HOST_PIN = import.meta.env.VITE_HOST_PIN || "411";

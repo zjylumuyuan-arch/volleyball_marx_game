@@ -30,7 +30,8 @@ http://localhost:5173/vote
 ```env
 VITE_SUPABASE_URL=你的 Supabase Project URL
 VITE_SUPABASE_ANON_KEY=你的 Supabase anon public key
-VITE_HOST_PIN=2026
+VITE_HOST_PIN=411
+VITE_VOTE_URL_OVERRIDE=
 ```
 
 ## 1. Supabase 建表和 Realtime 配置
@@ -176,13 +177,15 @@ alter publication supabase_realtime add table public.votes;
 VITE_SUPABASE_URL
 VITE_SUPABASE_ANON_KEY
 VITE_HOST_PIN
+VITE_VOTE_URL_OVERRIDE
 ```
 
 含义：
 
 - `VITE_SUPABASE_URL`：Supabase 项目 URL。
 - `VITE_SUPABASE_ANON_KEY`：Supabase 的 `anon public` key。
-- `VITE_HOST_PIN`：主持人控制面板 PIN，例如 `2026`。
+- `VITE_HOST_PIN`：主持人控制面板 PIN，例如 `411`。
+- `VITE_VOTE_URL_OVERRIDE`：可选备用投票页地址。留空时二维码自动指向当前域名的 `/vote`。
 
 注意：Vite 只有以 `VITE_` 开头的环境变量会被前端读取。
 
@@ -220,7 +223,8 @@ Settings -> Environment Variables
 ```text
 VITE_SUPABASE_URL=你的 Supabase Project URL
 VITE_SUPABASE_ANON_KEY=你的 Supabase anon public key
-VITE_HOST_PIN=2026
+VITE_HOST_PIN=411
+VITE_VOTE_URL_OVERRIDE=
 ```
 
 添加后重新部署一次。Vite 构建时会把这些变量打进前端包里。
@@ -272,7 +276,7 @@ https://你的 Vercel 域名/screen
 3. 主持人在控制面板输入 PIN，例如：
 
 ```text
-2026
+411
 ```
 
 4. 解锁后可以操作：
@@ -311,6 +315,8 @@ https://你的 Vercel 域名/vote
 - 如果大屏刷新页面，当前轮次、票数、路线和锁定状态会从 Supabase 恢复，数据不丢失。
 - 如果主持人误操作，可以点击“重置游戏”重新开始。
 - 如果二维码扫码失败，可以让学生手动访问 Vercel 地址的 `/vote`。
+- 如果微信扫码白屏，先让学生复制完整链接到手机系统浏览器；页面内置了静态加载提示，长时间停留时刷新一次。
+- 如果手机网络访问 Vercel 资源仍然很慢，可以把同一项目部署到备用域名，并在 Vercel 设置 `VITE_VOTE_URL_OVERRIDE` 指向备用 `/vote`。
 - 如果大屏显示“Supabase 尚未配置”，检查 Vercel 环境变量是否已添加，并重新部署。
 - 如果大屏票数不实时变化，检查 Supabase Realtime 是否已为 `game_state` 和 `votes` 开启。
 - 本项目没有复杂账号系统，主持人 PIN 只是课堂防误触，不是严格安全鉴权。

@@ -674,6 +674,20 @@ button {
   padding: 4px;
 }
 
+.qr-loading {
+  width: 108px;
+  height: 108px;
+  border-radius: 12px;
+  background: rgba(255, 248, 231, 0.18);
+  border: 1px solid rgba(255, 248, 231, 0.24);
+}
+
+.qr-loading.large {
+  width: 230px;
+  height: 230px;
+  border-radius: 20px;
+}
+
 .connection.missing-env {
   color: #ffb3b3;
 }

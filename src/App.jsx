@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { QRCodeSVG } from "qrcode.react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { HOST_PIN, isSupabaseConfigured, supabase } from "./supabaseClient.js";
 import {
   gameData,
@@ -10,6 +9,9 @@ import {
 } from "./gameData.js";
 
 const GAME_ID = "main";
+const QRCodeSVG = React.lazy(() =>
+  import("qrcode.react").then((module) => ({ default: module.QRCodeSVG }))
+);
 
 const emptyVotes = OPTION_KEYS.reduce((acc, key) => {
   acc[key] = 0;
@@ -74,6 +76,8 @@ function countVotes(rows) {
 }
 
 function getVoteUrl() {
+  const override = String(import.meta.env.VITE_VOTE_URL_OVERRIDE || "").trim();
+  if (override) return override;
   return `${window.location.origin}/vote`;
 }
 
@@ -245,7 +249,9 @@ function Header({ state, connection }) {
       </div>
       <div className="header-status">
         <div className="mini-qr">
-          <QRCodeSVG value={getVoteUrl()} size={108} level="H" includeMargin />
+          <Suspense fallback={<div className="qr-loading" />}>
+            <QRCodeSVG value={getVoteUrl()} size={108} level="H" includeMargin />
+          </Suspense>
           <span>扫码投票</span>
         </div>
         <div className="status-stack">
@@ -289,7 +295,9 @@ function CoverScreen({ state }) {
       </section>
 
       <section className="qr-card">
-        <QRCodeSVG value={voteUrl} size={230} level="H" includeMargin />
+        <Suspense fallback={<div className="qr-loading large" />}>
+          <QRCodeSVG value={voteUrl} size={230} level="H" includeMargin />
+        </Suspense>
         <p className="qr-url">{voteUrl}</p>
         <p className="control-hint">主持人在底部控制区输入 PIN 后开始游戏。</p>
         <p className="muted">{state.message}</p>
